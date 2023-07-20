@@ -437,32 +437,47 @@ e <- c("A" = "GATTACA",
        "B" = "TAGACCA", 
        "C" = "ATACA")
 
-sapply(e, length)
-
-e <- sapply(e, strsplit, split = "")
-vector_max <- max(sapply(e, length))
-
-z <- list()
-for (i in 1:length(e)) {
-  if (length(e[[i]]) < vecotr_max) {
-    z[[i]] <- append(e[[i]], rep("0", vector_max - length(e[[i]])))
-    #append(e[[x]], rep("0", max(sapply(e, length)) - length(e[[x]])))
-  } else{
-    z[[i]] <- e[[i]]
-  }
-}
-
-t <- list()
-for(row1 in 1:length(z)) {
-  for(row2 in 1:length(z)) {
-    if(row1 == row2)
-      next
-    t[[row1]] <-
-      z[[row1]] == z[[row2]]
-  }
-}
 
 
+# e <- sapply(e, strsplit, split = "")
+# sapply(e, length)
+# vector_max <- max(sapply(e, length))
+# 
+# z <- list()
+# for (i in 1:length(e)) {
+#   if (length(e[[i]]) < vector_max) {
+#     z[[i]] <- append(e[[i]], rep("0", vector_max - length(e[[i]])))
+#     #append(e[[x]], rep("0", max(sapply(e, length)) - length(e[[x]])))
+#   } else{
+#     z[[i]] <- e[[i]]
+#   }
+# }
+# 
+# t <- list()
+# for(row1 in 1:length(z)) {
+#   for(row2 in 1:length(z)) {
+#     if(row1 == row2)
+#       next
+#     t[[row1]] <-
+#       z[[row1]] == z[[row2]]
+#   }
+# }
+
+
+# PTXQC
+PTXQC::LCSn(e, min_LCS_length = 0)
+
+#solution
+# slow but works
+
+e <- read_fasta("rosalind/rosalind_lcsm.txt")
+vec <- e$sequence
+names(vec) <- e$name
+PTXQC::LCSn(vec, min_LCS_length = 2)
+
+# faster
+x <- PTXQC::LCSn(vec[1:2], min_LCS_length = 2)
+PTXQC::LCSn(c(x, vec[3]), min_LCS_length = 2)
 
 
 
