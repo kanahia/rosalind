@@ -481,3 +481,17 @@ PTXQC::LCSn(c(x, vec[3]), min_LCS_length = 2)
 
 
 
+# Finding a Protein Motif -------------------------------------------------
+
+ids <- c("A2Z669",
+         "B5ZC00",
+         "P07204_TRBM_HUMAN",
+         "P20840_SAG1_YEAST")
+
+ids <- sub(x = ids, pattern = "_.*", replacement = "")
+
+sapply(X = ids, 
+       FUN = function(x) {
+         protr::getUniProt(id = x)
+         }
+       )
