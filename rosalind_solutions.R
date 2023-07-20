@@ -48,7 +48,7 @@ reverse_complement <- function(seq) {
   seq[g] <- "C"
   
   out <- paste0(seq, collapse = "")
- 
+  
   return(out)
 }
 
@@ -133,7 +133,7 @@ amino_acids <- read.delim2("aminoacids.txt", header = F)
 aa_split <- gsub(x = strsplit(amino_acids$V1, split = "\t"),
                  replacement = "",
                  pattern = " "
-                 )
+)
 
 all <- unlist(strsplit(aa_split, split = ""))
 
@@ -365,4 +365,67 @@ out
 
 
 
+# graph -------------------------------------------------------------------
 
+read_fasta <- function(file) {
+  t <- readLines(file)
+  headers <- grep(">", t)
+  s <- data.frame(headers = t[headers], 
+                  from = headers+1, 
+                  to = c((headers-1)[-1], length(t))
+  )
+  # Process sequence lines
+  seqs <- rep(NA, length(headers))
+  for(i in 1:length(headers)) {
+    seqs[i]<-paste(t[s$from[i]:s$to[i]], collapse="")
+  }
+  
+  DF <- data.frame(name = t[headers], 
+                   sequence = seqs) 
+  
+}
+
+# working solution
+s <- read_fasta(file = "/home/jason/rosalind/ex_rosalind_graph.txt")
+test <- read_fasta(file = "/home/jason/rosalind/rosalind_grph.txt")
+s <- read_fasta(file = "/home/jason/rosalind/rosalind_grph_2.txt")
+
+find_graph <- function(data) {
+  s <- data
+  l <- lapply(as.list(s$sequence), strsplit, split = "")
+  string_length <- sapply(X = s$sequence, nchar)
+  fasta_names <- gsub(x = unlist(strsplit(s$name, split = " ")),
+                      pattern = ">",
+                      replacement = "")
+  
+  t <- list()
+  for(row1 in 1:length(l)) {
+    for(row2 in 1:length(l)) {
+      if(row1 == row2)
+        next
+      t[[paste(fasta_names[row1], fasta_names[row2])]] <-
+        all(tail(l[[row1]][[1]], 3) == head(l[[row2]][[1]], 3))
+    }
+  }
+  
+  t <- t[sapply(t, FUN = function(x) { x[1] == TRUE})]
+  
+  cat(paste(names(t), collapse = "\n"))
+}
+
+
+find_graph(data = s)
+
+
+
+# The Need for Averages ---------------------------------------------------
+
+
+data <- c(17862, 19995, 16460, 19114, 19485, 16802)
+
+chances <- c(4,4,4,3,2,0)
+
+sum(data * (chances/2))
+
+# from formula:
+(min(data*chances) + sum(data * chances))/2
