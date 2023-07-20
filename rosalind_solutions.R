@@ -429,3 +429,40 @@ sum(data * (chances/2))
 
 # from formula:
 (min(data*chances) + sum(data * chances))/2
+
+
+# Finding a Shared Motif --------------------------------------------------
+
+e <- c("A" = "GATTACA", 
+       "B" = "TAGACCA", 
+       "C" = "ATACA")
+
+sapply(e, length)
+
+e <- sapply(e, strsplit, split = "")
+vector_max <- max(sapply(e, length))
+
+z <- list()
+for (i in 1:length(e)) {
+  if (length(e[[i]]) < vecotr_max) {
+    z[[i]] <- append(e[[i]], rep("0", vector_max - length(e[[i]])))
+    #append(e[[x]], rep("0", max(sapply(e, length)) - length(e[[x]])))
+  } else{
+    z[[i]] <- e[[i]]
+  }
+}
+
+t <- list()
+for(row1 in 1:length(z)) {
+  for(row2 in 1:length(z)) {
+    if(row1 == row2)
+      next
+    t[[row1]] <-
+      z[[row1]] == z[[row2]]
+  }
+}
+
+
+
+
+
