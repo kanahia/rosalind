@@ -483,15 +483,49 @@ PTXQC::LCSn(c(x, vec[3]), min_LCS_length = 2)
 
 # Finding a Protein Motif -------------------------------------------------
 
-ids <- c("A2Z669",
+ids1 <- c("A2Z669",
          "B5ZC00",
          "P07204_TRBM_HUMAN",
          "P20840_SAG1_YEAST")
 
-ids <- sub(x = ids, pattern = "_.*", replacement = "")
+ids1 <- c("Q4FZD7",
+          "P06870_KLK1_HUMAN",
+          "P02974_FMM1_NEIGO",
+          "Q0AYI5",
+          "P55067_PGCN_RAT",
+          "P01588_EPO_HUMAN",
+          "P07204_TRBM_HUMAN",
+          "P01215_GLHA_HUMAN",
+          "A1X8C2",
+          "P10761_ZP3_MOUSE",
+          "Q2GBA3",
+          "Q00001_RHGA_ASPAC")
 
-sapply(X = ids, 
-       FUN = function(x) {
-         protr::getUniProt(id = x)
-         }
-       )
+getMotifPosition <- function(ids, 
+                             SearchPattern = "N(?=[^P](S|T)[^P])") {
+  
+  ids <- sub(x = ids, pattern = "_.*", replacement = "")
+  protein_seq <-
+    sapply(X = ids, 
+           FUN = function(x) {
+             protr::getUniProt(id = x)
+             }
+           )
+  
+  out <- 
+    sapply(X = protein_seq, 
+           FUN = function(x) {
+             unlist(gregexpr(text = x, pattern = SearchPattern, perl = TRUE))
+             }
+           )
+  
+  names(out) <-ids1
+  out <- out[sapply(out, FUN = function(x) { x[1] > 0 } )]
+  
+  for(i in seq_along(out)){
+    cat(names(out)[i], "\n")
+    cat(out[[i]], "\n")
+    }
+} 
+
+getMotifPosition(ids = ids1)
