@@ -529,3 +529,45 @@ getMotifPosition <- function(ids,
 } 
 
 getMotifPosition(ids = ids1)
+
+
+
+# Inferring mRNA from Protein ---------------------------------------------
+
+# inspired by https://github.com/Rgtemze/rosalind-solutions/blob/master/bioinformatics-stronghold/MRNA-Inferring-mRNA-from-Protein.py
+# at the begining I did not codnisder 3 stop codons
+
+mRNA_from_Protein <- function(amino_acid) {
+  protein_to_possible_rna_dict <- 
+    sort(
+      c("F" = 2, "L" = 6, "S" = 6, "Y" = 2, "C" = 2, 
+        "W" = 1, "P" = 4, "H" = 2, "Q" = 2, "R" = 6, 
+        "I" = 3, "M" = 1, "T" = 4, "N" = 2, "K" = 2, 
+        "V" = 4, "A" = 4, "D" = 2, "E" = 2, "G" = 4)
+    )
+  
+  stop_codons = c("UAA","UGA","UGA")
+  number_of_stop_codons = 3
+  
+  # get sequence
+  aa_sequence <- sapply(amino_acid, strsplit, split = "")
+  
+  #Assuming input is provided properly
+  possibility_amount <- 1
+  for (aa in seq_along(aa_sequence[[1]])) {
+    possibility_amount <- c(possibility_amount * protein_to_possible_rna_dict[aa_sequence[[1]][aa]]) %% 1E6
+  }
+  
+  #Number of stop codons is taken into account. 
+  #Despite being not explicity defined in the sequence they exist
+  possibility_amount <- (possibility_amount * number_of_stop_codons)
+  
+  print(possibility_amount[[1]])
+}
+
+
+mRNA_from_Protein(amino_acid = "MA")
+
+test_aa <- "MFAESLCDIIYNGPFPECHLRAMSREKALNMEKMVEKYQQWGYWHFMNISMDVYHPAASMHFWFYMFNMMKNSLMCHNVTGYQRCHQTCKRVCMIWHGAIPLCSPGEGAQKWESTANRHSNCNWADGDITSGWWCARISELETFISFSEKMHTGRWSYVHCVDWSGLGLTEFQWDNGQAILLRMVPYGRVTLHGMAMDPMTRGDKNEEFICIHREVPSAAAMLERLEHHMAPYCLRSHGDLSYKTHCIWFWPEAHFPNGAWRIQGLPQGGELHMCRIYCGDKWLGCFILYPHPWMNWDMHRRARPMYKRQFFMQPFGHWPTMVEVIKEQSIHHYTFRYCHPCDMCHWREPIGKYLMFMWETACLPTREDHASIASFGTFDRSTTMIHSTQMYADPGKFDGMTTCYFSMIQWARYSMLEPGLHPIPVKQACSVWSPVGSWDTVYPLLHDWQYPLEWKMGSCFHNVQLRCWIHNTSERMVERYNAFPSQYCYHGSQWKHHQACNWYLMHLTKNNDCWCPMWDDIFVFLYQNCAPPLVDNRPMIYPHQDLLFYHIHQSTQFECLCTERCMKSNTLEITHEIWWQCEACGVECCRWWLERHLLECNYTNLFFLRIVDALWMTEAGCMTRDNYPPNLWEYPWKERISPSHKCECQGALWGYCEPLMYKWWIFWISMITVTTSLKPLFKHYMHEMHTLFFDNRDACTLVQWPVWPWWCEVCKTMSAIRVWLSHKNFMFLWHQNFHNALARMVFRSHKSYVFIRVATWWQTSHMKWECQASSPGSVQRAPGKAQSFVTSKKASQVYTCNNLIYFWGTWCKTKLKLNKLTDCTKVQMNADYKIRLKSHLYWIANPDVNDVYTSTYSGNTVARHVNVQCKYTGFTGNEVFHRCEPTFHKNNYIDTMAGFVIQTLVAGGMHFKTICGACHRQVRAWWVYTCCPQKEMGQMKKYDWDIQMKIMQLITIYGIENNPKQFSQTWRESRKWGTHGHNFKLEQFMNRKMFYAYW"
+
+mRNA_from_Protein(amino_acid = test_aa)
