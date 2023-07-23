@@ -592,39 +592,6 @@ mRNA_from_Protein(amino_acid = test_aa)
 
 # Translating RNA into Protein --------------------------------------------
 
-codon_table <-
-  list(
-    "F" = c("UUU", "UUC"),
-    "L" = c("UUA", "UUG", "CUU", "CUC", "CUA", "CUG"),
-    "S" = c("UCU", "UCC", "UCA", "UCG", "AGU", "AGC"),
-    "Y" = c("UAU", "UAC"),
-    "STOP" = c("UAA", "UAG", "UGA"),
-    "C" = c("UGU", "UGC"),
-    "W" = c("UGG"),
-    "P" = c("CCU", "CCC", "CCA", "CCG"),
-    "H" = c("CAU", "CAC"),
-    "Q" = c("CAA", "CAG"),
-    "R" = c("CGU", "CGC", "CGA", "CGG", "AGA", "AGG"),
-    "I" = c("AUU", "AUC", "AUA"),
-    "M" = c("AUG"),
-    "T" = c("ACU", "ACC", "ACA", "ACG"),
-    "N" = c("AAU", "AAC"),
-    "K" = c("AAA", "AAG"),
-    "V" = c("GUU", "GUC", "GUA", "GUG"),
-    "A" = c("GCU", "GCC", "GCA", "GCG"),
-    "D" = c("GAU", "GAC"),
-    "E" = c("GAA", "GAG"),
-    "G" = c("GGU", "GGC", "GGA", "GGG")
-  )
-
-s <- 
-  "AGCCATGTAGCTAACTCAGGTTACATGGGGATGACCCCGCGACTTGGATTAGAGTCTCTTTTGGAATAAGCCTGAATGATCCGAGTAGCATCTCAG"
-
-s <- paste(readLines("/home/jason/practice/rosalind/rosalind_orf.txt"), 
-          collapse="")
-
-s <- gsub(x = s, pattern = ">Rosalind_[0-9]{4}", replacement = "")
-
 RNA_to_DNA <- function(seq) {
   seq <- unlist(strsplit(seq, split = ""))
   pos <- which(unlist(strsplit(seq, split = "")) == "U")
@@ -633,81 +600,7 @@ RNA_to_DNA <- function(seq) {
   return(seq)
 }
 
-#standard
-codons <- strsplit(x = s, split = "(?<=.{3})", perl = TRUE)[[1]]
-
-start <- which(strsplit(x = s, split = "(?<=.{3})", perl = TRUE)[[1]] == "ATG")
-stop <- which(strsplit(x = s, split = "(?<=.{3})", perl = TRUE)[[1]] %in% c("TAA", "TAG", "TGA"))
-
-
-get_amino(sequence = gsub(x = paste0(codons[9:23], collapse = ""), 
-                          pattern = "T", 
-                          replacement = "U")
-          )
-
-get_amino(sequence = gsub(x = paste0(codons[11:23], collapse = ""), 
-                          pattern = "T", 
-                          replacement = "U")
-)
-
-# one shift
-shift_1_codons <- strsplit(x = substring(s, 2), split = "(?<=.{3})", perl = TRUE)[[1]]
-shift_1_codons <- shift_1_codons[1:(length(shift_1_codons)-1)]
-
-shift_1_start <- which(strsplit(x = substring(s, 2), split = "(?<=.{3})", perl = TRUE)[[1]] == "ATG")
-shift_1_start
-shift_1_stop <- which(strsplit(x = substring(s, 2), split = "(?<=.{3})", perl = TRUE)[[1]] %in% c("TAA", "TAG", "TGA"))
-shift_1_stop
-
-get_amino(sequence = gsub(x = paste0(shift_1_codons[2:3], collapse = ""), 
-                          pattern = "T", 
-                          replacement = "U")
-          )
-
-#two shifts
-shift_2_codons <- strsplit(x = substring(s, 3), split = "(?<=.{3})", perl = TRUE)[[1]]
-shift_2_codons <- shift_2_codons[1:(length(shift_2_codons)-1)]
-
-shift_2_start <- which(strsplit(x = substring(s, 3), split = "(?<=.{3})", perl = TRUE)[[1]] == "ATG")
-shift_2_start
-shift_2_stop <- which(strsplit(x = substring(s, 3), split = "(?<=.{3})", perl = TRUE)[[1]] %in% c("TAA", "TAG", "TGA"))
-shift_2_stop
-
-get_amino(sequence = gsub(x = paste0(shift_2_codons[2:11], collapse = ""), 
-                          pattern = "T", 
-                          replacement = "U")
-          )
-
-
-s2 <- reverse_complement(seq = s, complement_only = FALSE)
-
-rv_codons <- strsplit(x = s2, split = "(?<=.{3})", perl = TRUE)[[1]]
-rv_start <- which(strsplit(x = s2, split = "(?<=.{3})", perl = TRUE)[[1]] == "ATG")
-rv_start
-rv_stop <- which(strsplit(x = s2, split = "(?<=.{3})", perl = TRUE)[[1]] %in% c("TAA", "TAG", "TGA"))
-rv_stop
-
-rv_codons_shift_1 <- strsplit(x = substring(s2, 2), split = "(?<=.{3})", perl = TRUE)[[1]]
-rv_start_shift_1 <- which(strsplit(x = substring(s2, 2), split = "(?<=.{3})", perl = TRUE)[[1]] == "ATG")
-rv_start_shift_1
-rv_stop_shift_1 <- which(strsplit(x = substring(s2, 2), split = "(?<=.{3})", perl = TRUE)[[1]] %in% c("TAA", "TAG", "TGA"))
-rv_stop_shift_1
-
-rv_codons_shift_2 <- strsplit(x = substring(s2,3), split = "(?<=.{3})", perl = TRUE)[[1]]
-rv_start_shift_2 <- which(strsplit(x = substring(s2,3), split = "(?<=.{3})", perl = TRUE)[[1]] == "ATG")
-rv_start_shift_2
-rv_stop_shift_2 <- which(strsplit(x = substring(s2,3), split = "(?<=.{3})", perl = TRUE)[[1]] %in% c("TAA", "TAG", "TGA"))
-rv_stop_shift_2
-
-
-get_amino(sequence = gsub(x = paste0(rv_codons_shift_2[2:28], collapse = ""), 
-                          pattern = "T", 
-                          replacement = "U")
-)
-
-
 alternative_aa_from_ORF <- function(seq) {
-  browser()
   # searching for codons
   codons <- strsplit(x = seq, split = "(?<=.{3})", perl = TRUE)[[1]]
   
@@ -721,14 +614,13 @@ alternative_aa_from_ORF <- function(seq) {
   
   out <- c()
   for(i in seq_along(start)) {
-    for(j in seq_along(stop)) {
+    my_stop <- stop[(stop > start[i])][1]
         out <- append(out, 
-                      get_amino(sequence = gsub(x = paste0(codons[start[i]:stop[j]], collapse = ""), 
+                      get_amino(sequence = gsub(x = paste0(codons[start[i]:my_stop], collapse = ""), 
                                                 pattern = "T", 
                                                 replacement = "U")
                       )
         )
-    }
   }
   
   out <- out[! grepl(out, pattern = "STOP")]
@@ -736,7 +628,7 @@ alternative_aa_from_ORF <- function(seq) {
 }
 
 # get data
-s <- paste(readLines("/home/jason/practice/rosalind/rosalind_orf_rep_2.txt"), 
+s <- paste(readLines("/home/jason/practice/rosalind/rosalind_orf_3.txt"), 
            collapse="")
 s <- gsub(x = s, pattern = ">Rosalind_[0-9]+", replacement = "")
 rev_s <- reverse_complement(seq = s, complement_only = FALSE)
