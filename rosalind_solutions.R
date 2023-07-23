@@ -644,3 +644,25 @@ out <-
     )
 
 cat(paste(unique(out), collapse = "\n"))
+
+
+
+# Enumerating Gene Orders -------------------------------------------------
+
+perm <- function(v) {
+  n <- length(v)
+  if (n == 1) v
+  else {
+    X <- NULL
+    for (i in 1:n) X <- rbind(X, cbind(v[i], perm(v[-i])))
+    X
+  }
+}
+
+all_permuatations <- function(n) {
+  print(nrow(perm(v = 1:n)))
+  cat(paste(apply(X = perm(v = 1:n), MARGIN = 1, paste, collapse = " "), collapse = "\n"))
+}
+
+all_permuatations(n = 5)
+
