@@ -628,7 +628,7 @@ alternative_aa_from_ORF <- function(seq) {
 }
 
 # get data
-s <- paste(readLines("/home/jason/practice/rosalind/rosalind_orf_3.txt"), 
+s <- paste(readLines("~/practice/rosalind/rosalind_orf_3.txt"), 
            collapse="")
 s <- gsub(x = s, pattern = ">Rosalind_[0-9]+", replacement = "")
 rev_s <- reverse_complement(seq = s, complement_only = FALSE)
@@ -665,4 +665,38 @@ all_permuatations <- function(n) {
 }
 
 all_permuatations(n = 5)
+
+
+
+# Calculating Protein Mass ------------------------------------------------
+
+weighted_alphabet <- function(file) {
+  t <- paste(readLines(file), 
+             collapse = "\n")
+  
+  t <- unlist(strsplit(t, split = "\n"))
+  t <- unlist(strsplit(t, split = " "))
+  t <- t[nzchar(t)]
+  t_dict <- setNames(object = round(as.numeric(t[seq(2, length(t), 2)]), digits = 8),
+                     nm = t[seq(1, length(t), 2)])
+  return(t_dict)
+}
+
+# calculate mass from mass symbol
+calculate_mass <- function(string) {
+  s <- unlist(strsplit(string, split = ""))
+  out <- sum(t_dict[names(t_dict) %in% names(table(s))] * table(s))
+  return(out)
+}
+
+
+t_dict <- weighted_alphabet(file = "~/practice/rosalind/mass_table.txt")
+
+res <-calculate_mass(string = "SKADYEK")
+sprintf("%.3f", res)
+
+ex <- readLines("~/practice/rosalind/rosalind_prtm (5).txt")
+res2 <- calculate_mass(string = ex)
+sprintf("%.3f", res2)
+
 
