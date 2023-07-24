@@ -700,3 +700,60 @@ res2 <- calculate_mass(string = ex)
 sprintf("%.3f", res2)
 
 
+# Locating Restriction Sites ----------------------------------------------
+
+s <- "TCAATGCATGCGGGTCTATATGCAT"
+#rev_s <- reverse_complement(seq = s, complement_only = FALSE)
+
+s <- paste(readLines("/home/jason/practice/rosalind/rosalind_revp.txt"), collapse = "")
+s <- gsub(x = s, pattern = ">Rosalind_[0-9]+", replacement = "")
+
+get_palindroms <- function(seq) {
+  browser()
+  s <- seq
+  all_strings <- c()
+  for(i in 1:nchar(s)) {
+    for(j in 1:nchar(s)) {
+      if(i != j & i < j) {
+        #next
+        all_strings <- append(all_strings, substring(s, first = i,j))
+      }
+    }
+  }
+  
+  all_strings <- all_strings[nchar(all_strings) >= 4 & nchar(all_strings) <= 12]
+  
+  all_strings <- all_strings[which((nchar(all_strings) %% 2) == 0)]
+  
+  out_list <- list()
+  for(i in seq_along(all_strings)){
+    
+    fwd <- substring(all_strings[i], 1, nchar(all_strings[i])/2)
+    rev_comp <- reverse_complement(seq = fwd, complement_only = FALSE)
+    to_compare_with <- substring(all_strings[i], nchar(all_strings[i])/2 +1, nchar(all_strings[i]))
+    is.match <- rev_comp == to_compare_with
+    
+    if(is.match) {
+      out_list[[all_strings[i]]] <- gregexpr(text = s, pattern = all_strings[i])
+    }
+    
+  }
+  
+  out <- c()
+  for(i in seq_along(out_list)) {
+    x <- as.vector(c(unlist(out_list[[i]]), unlist(attributes(x = out_list[[i]][[1]]))))
+    x <- as.numeric(x[1:(length(x)-2)])
+    x <- x[c(seq(1, length(x), 3), seq(2, length(x), 2))]
+    
+    out <- append(out, x)
+    mtx <- matrix(out, ncol = 2, byrow = T)
+    mtx <- mtx[order(mtx[,1],decreasing=FALSE),]
+  }
+  
+  return(mtx)
+
+}
+
+get_palindroms(seq = s)
+
+
