@@ -702,30 +702,28 @@ sprintf("%.3f", res2)
 
 # Locating Restriction Sites ----------------------------------------------
 
-s <- "TCAATGCATGCGGGTCTATATGCAT"
-#rev_s <- reverse_complement(seq = s, complement_only = FALSE)
+get_palindroms2 <- function(seq) {
 
-s <- paste(readLines("/home/jason/practice/rosalind/rosalind_revp.txt"), collapse = "")
-s <- gsub(x = s, pattern = ">Rosalind_[0-9]+", replacement = "")
-
-get_palindroms <- function(seq) {
-  browser()
   s <- seq
   all_strings <- c()
+  start <- c()
+  stop <- c()
   for(i in 1:nchar(s)) {
     for(j in 1:nchar(s)) {
-      if(i != j & i < j) {
-        #next
-        all_strings <- append(all_strings, substring(s, first = i,j))
+      str <-  substring(s, i, j)
+      if(nchar(str) >= 4 & nchar(str) <=12 & (nchar(str) %% 2) == 0) {
+        if(i < j) {
+          all_strings <- append(all_strings, substring(s, first = i,j))
+          start <- append(start, i)
+          stop <- append(stop, j)
+        }
+        
       }
     }
   }
   
-  all_strings <- all_strings[nchar(all_strings) >= 4 & nchar(all_strings) <= 12]
-  
-  all_strings <- all_strings[which((nchar(all_strings) %% 2) == 0)]
-  
   out_list <- list()
+  is.palindrom <- c()
   for(i in seq_along(all_strings)){
     
     fwd <- substring(all_strings[i], 1, nchar(all_strings[i])/2)
@@ -734,26 +732,26 @@ get_palindroms <- function(seq) {
     is.match <- rev_comp == to_compare_with
     
     if(is.match) {
-      out_list[[all_strings[i]]] <- gregexpr(text = s, pattern = all_strings[i])
+      is.palindrom <- append(is.palindrom, i)
     }
-    
   }
   
-  out <- c()
-  for(i in seq_along(out_list)) {
-    x <- as.vector(c(unlist(out_list[[i]]), unlist(attributes(x = out_list[[i]][[1]]))))
-    x <- as.numeric(x[1:(length(x)-2)])
-    x <- x[c(seq(1, length(x), 3), seq(2, length(x), 2))]
-    
-    out <- append(out, x)
-    mtx <- matrix(out, ncol = 2, byrow = T)
-    mtx <- mtx[order(mtx[,1],decreasing=FALSE),]
-  }
+  out <- 
+    data.frame("start" = start[is.palindrom], 
+               "length" = stop[is.palindrom] - start[is.palindrom] +1)
+  out <- out[order(out[,1],decreasing=FALSE),]
+  return(out)
   
-  return(mtx)
-
 }
 
-get_palindroms(seq = s)
+my_out <- get_palindroms2(seq = s)
+cat(paste(paste(my_out[, 1], my_out[,2], sep = " "), collapse = "\n"))
+
+my_out <- get_palindroms2(seq = "TATATA")
+cat(paste(paste(my_out[, 1], my_out[,2], sep = " "), collapse = "\n"))
 
 
+m <- paste(readLines("/home/jason/practice/rosalind/rosalind_revp_final.txt"), collapse = "")
+m <- gsub(x = m, pattern = ">Rosalind_[0-9]+", replacement = "")
+my_out <- get_palindroms2(seq = m)
+cat(paste(paste(my_out[, 1], my_out[,2], sep = " "), collapse = "\n"))
