@@ -386,7 +386,7 @@ out
 # graph -------------------------------------------------------------------
 
 read_fasta <- function(file) {
-  t <- readLines(file)
+  t <- readLines(file, warn = FALSE)
   headers <- grep(">", t)
   s <- data.frame(headers = t[headers], 
                   from = headers+1, 
@@ -783,3 +783,37 @@ get_palindroms2 <- function(seq) {
 }
 
 get_palindroms2(seq = m)
+
+
+
+# RNA Splicing ------------------------------------------------------------
+
+# require read_fasta()
+# require transcribeDNA()
+# require get_amino()
+# get_aa_dict()
+translateDNA2protein <- function(file) {
+  
+  data <- read_fasta(file)
+  sequence <- data$sequence[1]
+  introns <- data$sequence[-1]
+  seq <- get_aa_dict(path = "~/practice/rosalind/aminoacids.txt")
+  
+  for(i in seq_along(introns)) {
+    
+    sequence <- gsub(x = sequence, pattern = introns[i], replacement = "")
+  }
+  
+  sequence <- transcribeDNA(seq = sequence)
+  sequence <- get_amino(sequence = sequence)
+  return(sequence)
+}
+
+
+translateDNA2protein(file = "~/practice/rosalind/splice_RNA_example.txt")
+
+translateDNA2protein(file = "~/practice/rosalind/rosalind_splc.txt")
+
+
+
+         
