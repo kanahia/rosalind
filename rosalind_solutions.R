@@ -815,5 +815,34 @@ translateDNA2protein(file = "~/practice/rosalind/splice_RNA_example.txt")
 translateDNA2protein(file = "~/practice/rosalind/rosalind_splc.txt")
 
 
+# Enumerating k-mers Lexicographically ------------------------------------
+# list all possible k-mers from string of particular length 
 
-         
+k.mers <- function(data,
+                   length) {
+  s <- unlist(strsplit(data, split = " "))
+  n <- length
+  
+  combinations <- expand.grid(rep(list(1:length(s)), n))
+  
+  out <-
+    sort(apply(
+      X = combinations,
+      MARGIN = 1,
+      FUN = function(x) {
+        paste0(s[x], collapse = "")
+      }
+    ))
+  
+  cat(paste(out, "\n"),
+      sep = "")
+}
+
+# solution example
+s <- c("A C G T")
+k.mers(data = s, length = 2)
+
+#solution dataset
+s <- c("A B C D E F G")
+k.mers(data = s, length = 3)
+
