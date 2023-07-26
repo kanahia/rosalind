@@ -701,8 +701,8 @@ sprintf("%.3f", res2)
 
 
 # Locating Restriction Sites ----------------------------------------------
-
-get_palindroms2 <- function(seq) {
+# first solution
+get_palindroms <- function(seq) {
 
   s <- seq
   all_strings <- c()
@@ -744,14 +744,42 @@ get_palindroms2 <- function(seq) {
   
 }
 
-my_out <- get_palindroms2(seq = s)
+s <- "TCAATGCATGCGGGTCTATATGCAT"
+my_out <- get_palindroms(seq = s)
 cat(paste(paste(my_out[, 1], my_out[,2], sep = " "), collapse = "\n"))
 
-my_out <- get_palindroms2(seq = "TATATA")
+my_out <- get_palindroms(seq = "TATATA")
 cat(paste(paste(my_out[, 1], my_out[,2], sep = " "), collapse = "\n"))
 
 
-m <- paste(readLines("/home/jason/practice/rosalind/rosalind_revp_final.txt"), collapse = "")
+m <- paste(readLines("~/practice/rosalind/rosalind_revp_final.txt"), collapse = "")
 m <- gsub(x = m, pattern = ">Rosalind_[0-9]+", replacement = "")
-my_out <- get_palindroms2(seq = m)
+my_out <- get_palindroms(seq = m)
 cat(paste(paste(my_out[, 1], my_out[,2], sep = " "), collapse = "\n"))
+
+
+# second cleaner solution
+get_palindroms2 <- function(seq) {
+  
+  s <- seq
+  for(i in 1:nchar(s)) {
+    for(j in 1:nchar(s)) {
+      str <-  substring(s, i, j)
+      if(nchar(str) >= 4 & nchar(str) <=12 & (nchar(str) %% 2) == 0) {
+        if(i < j) {
+          
+          fwd <- substring(str, 1, nchar(str)/2)
+          rev_comp <- reverse_complement(seq = fwd, complement_only = FALSE)
+          to_compare_with <- substring(str, nchar(str)/2 +1, nchar(str))
+          is.match <- rev_comp == to_compare_with
+          if(is.match) {
+            cat(paste(i , j-i +1, "\n"))
+            }
+        }
+        
+      }
+    }
+  }
+}
+
+get_palindroms2(seq = m)
