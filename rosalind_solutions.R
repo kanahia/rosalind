@@ -846,3 +846,100 @@ k.mers(data = s, length = 2)
 s <- c("A B C D E F G")
 k.mers(data = s, length = 3)
 
+
+
+# Longest Increasing Subsequence ------------------------------------------
+
+## credit to chatgpt
+
+find_longest_increasing_and_decreasing_subsequences <- function(nums) {
+  n <- length(nums)
+  if (n == 0) return(
+    list(length_increasing = 0,
+         sequence_increasing = NULL,
+         length_decreasing = 0,
+         sequence_decreasing = NULL
+         )
+    )
+  
+  # Initialize arrays dp_increasing and dp_decreasing to store lengths of longest increasing and decreasing subsequences
+  dp_increasing <- rep(1, n)
+  dp_decreasing <- rep(1, n)
+  prev_increasing <- numeric(n)
+  prev_decreasing <- numeric(n)
+  
+  # Initialize variables to store the maximum lengths found so far
+  max_length_increasing <- 1
+  max_length_decreasing <- 1
+  max_length_index_increasing <- 1
+  max_length_index_decreasing <- 1
+  
+  for (i in 2:n) {
+    for (j in 1:(i-1)) {
+      # Check if the current element (nums[i]) is greater than the previous element (nums[j]) for the increasing subsequence
+      if (nums[i] > nums[j]) {
+        # Update the length of the longest increasing subsequence ending at index i
+        if (dp_increasing[i] < dp_increasing[j] + 1) {
+          dp_increasing[i] <- dp_increasing[j] + 1
+          prev_increasing[i] <- j
+          if (dp_increasing[i] > max_length_increasing) {
+            max_length_increasing <- dp_increasing[i]
+            max_length_index_increasing <- i
+          }
+        }
+      }
+      # Check if the current element (nums[i]) is less than the previous element (nums[j]) for the decreasing subsequence
+      else if (nums[i] < nums[j]) {
+        # Update the length of the longest decreasing subsequence ending at index i
+        if (dp_decreasing[i] < dp_decreasing[j] + 1) {
+          dp_decreasing[i] <- dp_decreasing[j] + 1
+          prev_decreasing[i] <- j
+          if (dp_decreasing[i] > max_length_decreasing) {
+            max_length_decreasing <- dp_decreasing[i]
+            max_length_index_decreasing <- i
+          }
+        }
+      }
+    }
+  }
+  
+  # Reconstruct the longest increasing subsequence
+  lis_increasing <- numeric(max_length_increasing)
+  current_index <- max_length_index_increasing
+  for (i in rev(seq_len(max_length_increasing))) {
+    lis_increasing[i] <- nums[current_index]
+    current_index <- prev_increasing[current_index]
+  }
+  
+  # Reconstruct the longest decreasing subsequence
+  lis_decreasing <- numeric(max_length_decreasing)
+  current_index <- max_length_index_decreasing
+  for (i in rev(seq_len(max_length_decreasing))) {
+    lis_decreasing[i] <- nums[current_index]
+    current_index <- prev_decreasing[current_index]
+  }
+  
+  return(list(
+    length_increasing = max_length_increasing,
+    sequence_increasing = lis_increasing,
+    length_decreasing = max_length_decreasing,
+    sequence_decreasing = lis_decreasing
+  ))
+}
+
+# test
+find_longest_increasing_and_decreasing_subsequences(c(8, 2, 1, 6, 5, 7, 4, 3, 9))
+
+# solution
+input <- 
+  unlist(
+    strsplit(readLines("rosalind/rosalind_lgis.txt"),
+             split = "\n")
+    )
+
+n <- as.numeric(input[1])
+data <- as.numeric(unlist(strsplit(input[2], split = " ")))
+out <- find_longest_increasing_and_decreasing_subsequences(nums = data)
+
+cat(paste(out$sequence_increasing))
+
